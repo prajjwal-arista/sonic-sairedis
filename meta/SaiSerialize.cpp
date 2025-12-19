@@ -2257,6 +2257,9 @@ std::string sai_serialize_attr_value(
         case SAI_ATTR_VALUE_TYPE_PORT_SNR_LIST:
             return sai_serialize_port_snr_list(attr.value.portsnrlist, countOnly);
 
+        case SAI_ATTR_VALUE_TYPE_TAPS_LIST:
+            return sai_serialize_taps_list(attr.value.portserdestaps, countOnly);
+
 //        case SAI_ATTR_VALUE_TYPE_UINT16_LIST:
 //            return sai_serialize_number_list(attr.value.u16list, countOnly);
 //
@@ -2298,9 +2301,6 @@ std::string sai_serialize_attr_value(
 
         case SAI_ATTR_VALUE_TYPE_SEGMENT_LIST:
             return sai_serialize_segment_list(attr.value.segmentlist, countOnly);
-
-        case SAI_ATTR_VALUE_TYPE_TAPS_LIST:
-            return sai_serialize_taps_list(attr.value.portserdestaps, countOnly);
 
             // ACL FIELD DATA
 
@@ -4701,6 +4701,9 @@ void sai_deserialize_attr_value(
         case SAI_ATTR_VALUE_TYPE_PORT_SNR_LIST:
             return sai_deserialize_port_snr_list(s, attr.value.portsnrlist, countOnly);
 
+        case SAI_ATTR_VALUE_TYPE_TAPS_LIST:
+            return sai_deserialize_taps_list(s, attr.value.portserdestaps, countOnly);
+
 //        case SAI_ATTR_VALUE_TYPE_UINT16_LIST:
 //            return sai_deserialize_number_list(s, attr.value.u16list, countOnly);
 //
@@ -4742,9 +4745,6 @@ void sai_deserialize_attr_value(
 
         case SAI_ATTR_VALUE_TYPE_SEGMENT_LIST:
             return sai_deserialize_segment_list(s, attr.value.segmentlist, countOnly);
-
-        case SAI_ATTR_VALUE_TYPE_TAPS_LIST:
-            return sai_deserialize_taps_list(s, attr.value.portserdestaps, countOnly);
 
             // ACL FIELD DATA
 

@@ -2120,7 +2120,7 @@ public:
                       port_serdes_rid, laneCount);
     }
 
-    void updatePortSerdesIdToSerdesCountAttrCountMap(sai_object_id_t port_serdes_rid)
+    void updatePortSerdesTapsCountMap(sai_object_id_t port_serdes_rid)
     {
         std::vector<sai_port_serdes_attr_t> countAttrs = {
             SAI_PORT_SERDES_ATTR_TX_FIR_COUNT
@@ -2146,13 +2146,13 @@ public:
                 SWSS_LOG_ERROR("PORT_PHY_SERDES_ATTR: Failed to get port serdes count attr %s for port_serdes RID:0x%" PRIx64 ", status:%d",
                               sai_serialize_port_serdes_attr(attrId).c_str(), port_serdes_rid, status);
                 // TODO : Remove below line, currently setting dummy taps count as 6
-                m_portSerdesIdToSerdesCountAttrCountsMap[port_serdes_rid][attrId] = 6;
+                m_portSerdesTapsCountMap[port_serdes_rid][attrId] = 6;
                 continue;
             }
 
             count = attr.value.u32;
 
-            m_portSerdesIdToSerdesCountAttrCountsMap[port_serdes_rid][attrId] = count;
+            m_portSerdesTapsCountMap[port_serdes_rid][attrId] = count;
             SWSS_LOG_DEBUG("PORT_PHY_SERDES_ATTR: Stored %s for port_serdes_rid:0x%" PRIx64 " = %u",
                           sai_serialize_port_serdes_attr(attrId).c_str(), port_serdes_rid, count);
         }
@@ -2190,8 +2190,8 @@ public:
             case SAI_PORT_SERDES_ATTR_TX_FIR_TAPS_LIST:
             {
                 // Find the TX Fir TAPS count from the map
-                auto count_it = m_portSerdesIdToSerdesCountAttrCountsMap.find(rid);
-                if (count_it == m_portSerdesIdToSerdesCountAttrCountsMap.end())
+                auto count_it = m_portSerdesTapsCountMap.find(rid);
+                if (count_it == m_portSerdesTapsCountMap.end())
                 {
                  SWSS_LOG_ERROR("PORT_PHY_SERDES_ATTR: port_serdes_rid:0x%" PRIx64 " has no serdes count attribute information", rid);
                  break;
@@ -2310,7 +2310,7 @@ public:
         // update member maps
         updatePortSerdesIdToPortIdMap(rid, vid);
         updatePortSerdesIdToLaneCountMap(rid);
-        updatePortSerdesIdToSerdesCountAttrCountMap(rid);
+        updatePortSerdesTapsCountMap(rid);
     }
 
     void removeObject(_In_ sai_object_id_t vid) override
@@ -2338,12 +2338,12 @@ public:
                 m_portSerdesIdToPortIdMap.erase(serdes_it);
             }
 
-            // Clean up m_portSerdesIdToSerdesCountAttrCountsMap
-            auto count_it = m_portSerdesIdToSerdesCountAttrCountsMap.find(port_serdes_rid);
-            if (count_it != m_portSerdesIdToSerdesCountAttrCountsMap.end())
+            // Clean up m_portSerdesTapsCountMap
+            auto count_it = m_portSerdesTapsCountMap.find(port_serdes_rid);
+            if (count_it != m_portSerdesTapsCountMap.end())
             {
-                SWSS_LOG_DEBUG("PORT_PHY_SERDES_ATTR: Removing port_serdes RID:0x%" PRIx64 " from m_portSerdesIdToSerdesCountAttrCountsMap", port_serdes_rid);
-                m_portSerdesIdToSerdesCountAttrCountsMap.erase(count_it);
+                SWSS_LOG_DEBUG("PORT_PHY_SERDES_ATTR: Removing port_serdes RID:0x%" PRIx64 " from m_portSerdesTapsCountMap", port_serdes_rid);
+                m_portSerdesTapsCountMap.erase(count_it);
             }
         }
 
@@ -2448,7 +2448,7 @@ private:
     std::string m_dbCounters;
     std::map<sai_object_id_t, PortIdInfo> m_portSerdesIdToPortIdMap;
     std::map<sai_object_id_t, uint32_t> m_portSerdesIdToLaneCountMap;
-    std::map<sai_object_id_t, std::map<sai_port_serdes_attr_t, uint32_t>> m_portSerdesIdToSerdesCountAttrCountsMap;
+    std::map<sai_object_id_t, std::map<sai_port_serdes_attr_t, uint32_t>> m_portSerdesTapsCountMap;
 };
 
 const std::unordered_map<sai_port_serdes_attr_t, std::string> PortSerdesAttrContext::m_attrAliases = {
